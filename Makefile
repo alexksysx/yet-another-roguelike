@@ -9,8 +9,9 @@ else
 	LIBS = -lX11 -lGL -lpthread -lpng -lstdc++fs -lm -std=c++17
 endif
 
-all: olc main objects animation $(EXEPATH)
-	$(CC) -g -o build/app.exe obj/main.o obj/olcPixelGameEngine.o obj/objects.o obj/animation.o $(LIBS)
+all: olc main objects animation map $(EXEPATH)
+	$(CC) -g -o build/app.exe obj/main.o obj/olcPixelGameEngine.o obj/objects.o obj/animation.o obj/map.o $(LIBS)
+
 
 olc: $(OBJPATH)
 	$(CC) -c -g -o obj/olcPixelGameEngine.o src/olcPixelGameEngine.cpp
@@ -23,6 +24,9 @@ animation: $(OBJPATH)
 
 main: $(OBJPATH)
 	$(CC) -c -g -o obj/main.o $(CFLAGS) src/main.cpp
+
+map: $(OBJPATH)
+	$(CC) -c -g -o obj/map.o $(CFLAGS) src/map.cpp
 
 $(OBJPATH):
 	mkdir -p obj

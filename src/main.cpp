@@ -2,7 +2,9 @@
 #include "easing.h"
 #include "objects.h"
 #include "animation.h"
+#include "map.h"
 #include <memory>
+#include <time.h>
 
 class Game : public olc::PixelGameEngine {
 private:
@@ -11,11 +13,10 @@ private:
     std::unique_ptr<AnimationColorBlink> animationColor = nullptr;
     std::shared_ptr<Easing> moveEasingFunction = nullptr;
     std::shared_ptr<Easing> blinkEasingFunction = nullptr;
+    GameMap map = GameMap(30, 20);
+    
     bool isAnimationActive = false;
     float completeTime = 0.3;
-    float tmpTime = 0.0;
-    float startPosition = 0.0;
-    float endPosition = 0.0;
 
 public:
     Game() {
@@ -31,6 +32,7 @@ public:
         blinkEasingFunction = std::make_shared<EaseSin>();
         animationMove = std::make_unique<AnimationMove>(player, moveEasingFunction, (olc::vf2d) {0.0f, 0.0f}, completeTime);
         animationColor = std::make_unique<AnimationColorBlink>(player, blinkEasingFunction, olc::RED, completeTime, true);
+        map.generateMap(3);
         return true;
     }
 
@@ -44,6 +46,7 @@ public:
 
         Clear(olc::WHITE);
         DrawDecal(player->getPosition(), player->getDecal(), player->getScale(), player->getPixel());
+
         return true;
     }
 
@@ -66,6 +69,8 @@ public:
 };
 
 int main() {
+    srand(1);
+    // srand(time(0));
     Game game = Game();
     if (game.Construct(800, 600, 1, 1, false, true)) {
         game.Start();
