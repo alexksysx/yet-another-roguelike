@@ -14,7 +14,7 @@ all: olc main objects animation map $(EXEPATH)
 
 
 olc: $(OBJPATH)
-	$(CC) -c -g -o obj/olcPixelGameEngine.o src/olcPixelGameEngine.cpp
+	$(CC) -c -g -o obj/olcPixelGameEngine.o src/olc/olcPixelGameEngine.cpp
 
 objects: $(OBJPATH)
 	$(CC) -c -g -o obj/objects.o $(CFLAGS) src/objects.cpp

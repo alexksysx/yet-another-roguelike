@@ -3,7 +3,7 @@
 
 #define CC "g++"
 #define SOURCE "src/main.cpp"
-#define OCL "src/olcPixelGameEngine.cpp"
+#define OLC "src/olc/olcPixelGameEngine.cpp"
 #define OUTPUT "-o", "build/app.exe"
 #define FLAGS "-Wall", "-Wextra", "-g"
 
@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     GO_REBUILD_URSELF(argc, argv);
     MKDIRS("build");
     MKDIRS("obj");
-    CMD(CC, "-c", "-g", "-o", "obj/olcPixelGameEngine.o", OCL);
+    CMD(CC, "-c", "-g", "-o", "obj/olcPixelGameEngine.o", OLC);
     CMD(CC, "-c", FLAGS, "-o", "obj/objects.o", "src/objects.cpp");
     CMD(CC, "-c", FLAGS, "-o", "obj/animation.o", "src/animation.cpp");
     CMD(CC, "-c", FLAGS, "-o", "obj/main.o", SOURCE);

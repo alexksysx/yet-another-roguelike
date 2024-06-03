@@ -2,7 +2,7 @@
 #include <memory>
 #include "objects.h"
 #include "easing.h"
-#include "olcPixelGameEngine.h"
+#include "olc/olcPixelGameEngine.h"
 
 template <typename T>
 class Animation {
