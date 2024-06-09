@@ -3,7 +3,6 @@
 #include "objects.h"
 #include <vector>
 #include <list>
-#include <random>
 
 enum class TileType{ EMPTY = 0, FLOOR, WALL, ENTER, EXIT };
 
@@ -76,4 +75,6 @@ public:
     Tile& getTile(int x, int y);
     std::vector<Tile>& getTiles();
     const Tile& operator [](int i) const;
+    int getWidth() const;
+    int getHeight() const;
 };

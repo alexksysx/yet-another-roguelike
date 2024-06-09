@@ -20,13 +20,12 @@ private:
     std::shared_ptr<Easing> moveEasingFunction = nullptr;
     std::shared_ptr<Easing> blinkEasingFunction = nullptr;
 
-    int mapWidth = 30;
-    int mapHeight = 20;
-
     std::unique_ptr<GameMap> map = nullptr;
     
-    bool isAnimationActive = false;
-    float completeTime = 0.3;
+    const float completeTime = 0.3;
+
+    float spriteScale = 0;
+    float tileOffset = 0;
 
 public:
     Game() {
@@ -36,6 +35,8 @@ public:
     ~Game() {}
 
     bool OnUserCreate() override {
+        srand(std::time(0));
+
         lua.open_libraries(sol::lib::base);
 
         lua.new_usertype<MapConfig>("MapCfg",
@@ -50,12 +51,15 @@ public:
 
         lua.script_file("./../scripts/cfg.lua");
 
+        spriteScale = lua["spriteScale"].get_or(2.0f);
+        tileOffset = lua["tilePositionOffset"].get_or(32.0f);
+
         MapConfig mapConfig = lua["Map"].get<MapConfig>();
 
         player = std::make_shared<Player>(new olc::Sprite("./../assets/player.png"));
         player->setScale({2.0f, 2.0f});
 
-        wallTile = std::make_shared<Drawable>(new olc::Sprite("./../assets/wall.png"), (olc::vf2d) {2.0, 2.0});
+        wallTile = std::make_shared<Drawable>(new olc::Sprite("./../assets/wall.png"), (olc::vf2d) {spriteScale, spriteScale});
 
         moveEasingFunction = std::make_shared<EaseInOutExpo>();
         blinkEasingFunction = std::make_shared<EaseSin>();
@@ -78,10 +82,10 @@ public:
         Clear(olc::WHITE);
 
     // TODO криувая генерация или отрисовка
-        for (int y = 0; y < mapHeight; y++) {
-            for (int x = 0; x < mapWidth; x++) {
+        for (int y = 0; y < map->getHeight(); y++) {
+            for (int x = 0; x < map->getWidth(); x++) {
                 if (map->getTile(x, y).getType() == TileType::FLOOR) {
-                    DrawDecal({x*32.0f, y*32.0f}, wallTile->getDecal(), wallTile->getScale());
+                    DrawDecal({x*tileOffset, y*tileOffset}, wallTile->getDecal(), wallTile->getScale());
                 }
             }
         }
@@ -114,7 +118,6 @@ public:
 };
 
 int main() {
-    srand(time(0));
 
     sol::state lua;
     lua.open_libraries(sol::lib::base);

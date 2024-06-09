@@ -2,7 +2,7 @@
 
 ## Windows
 To build project on Windows you need:
-[msys2](https://www.msys2.org/) with gcc, g++, ar and make (optional) installed.
+[msys2](https://www.msys2.org/) with gcc and g++.
 
 To install tools run in msys2 terminal:
 `$ pacman -S mingw-w64-ucrt-x86_64-gcc`

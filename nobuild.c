@@ -22,20 +22,17 @@
 static const char* luaFiles[] = {
     "lapi", "lcode", "lctype", "ldebug", "ldo", "ldump", "lfunc", "lgc", "llex", "lmem", "lobject",
     "lopcodes", "lparser", "lstate", "lstring", "ltable", "ltm", "lundump", "lvm", "lzio",
-    "lua", "lauxlib", "lbaselib", "lcorolib", "ldblib", "liolib", "lmathlib", "loslib", "lstrlib", "ltablib",
+    "lauxlib", "lbaselib", "lcorolib", "ldblib", "liolib", "lmathlib", "loslib", "lstrlib", "ltablib",
     "lutf8lib", "loadlib", "linit", 0
 };
 
 int compileLua() {
     const char** ptr = luaFiles;
-    Cstr allLibs = "";
     while (*ptr != 0) {
         Cstr libfile = CONCAT(LUA_PATH, *ptr, ".o");
         CMD("gcc", LUA_CFLAGS, "-c", "-o", libfile, CONCAT(LUA_PATH, *ptr, ".c"));
-        allLibs = CONCAT(allLibs, " ", libfile);
         ++ ptr;
     }
-    CMD("ar", "rvs", CONCAT(LUA_PATH, "liblua.a", allLibs));
     return 0;
 }
 
@@ -47,15 +44,11 @@ int cleanLua() {
         path_rm(fileToDel);
         ptr++;
     }
-
-    Cstr fileToDel = CONCAT(LUA_PATH, "liblua.a");
-    INFO("Removing file: %s\n", fileToDel);
-    path_rm(fileToDel);
     return 0;
 }
 
 int makeLua() {
-    if (PATH_EXISTS(PATH(LUA_PATH, "liblua.a")) != 1) {
+    if (PATH_EXISTS(PATH(LUA_PATH, "linit.o")) != 1) {
         INFO("Compiling Lua");
         return compileLua();
     } else {
@@ -81,36 +74,27 @@ int makeOlcPixelGameEngine() {
 
 // end of OLC:PixelGameEngine section
 
-// sol2 section
-
-int makeSol() {
-    if (PATH_EXISTS(PATH("obj", "sol.o")) != 1) {
-        INFO("Compiling Sol2");
-        CMD(CC, INCLUDE_DIRS, "-c", "-g", "-o", "obj/sol.o", "src/sol.cpp");
-        return 0;
-    } else {
-        INFO("Sol2 already compiled, skipping");
-        return 0;
-    }
-}
-
-// end of Sol2 section
-
 int main(int argc, char* argv[]) {
 GO_REBUILD_URSELF(argc, argv);
-    // makeLua();
-    // cleanLua();
     
     MKDIRS("build");
     MKDIRS("obj");
     makeOlcPixelGameEngine();
     makeLua();
-    // makeSol();
     CMD(CC, "-c", FLAGS, "-o", "obj/objects.o", "src/objects.cpp");
     CMD(CC, "-c", FLAGS, "-o", "obj/animation.o", "src/animation.cpp");
     CMD(CC, "-c", FLAGS, "-o", "obj/map.o", "src/map.cpp");
     CMD(CC, "-c", INCLUDE_DIRS, FLAGS, "-o", "obj/main.o", SOURCE);
 
-    CMD(CC, "-g", OUTPUT, LIB_DIRS, "obj/main.o", "obj/olcPixelGameEngine.o", "obj/objects.o", "obj/animation.o", "obj/map.o", LIBS);
+
+    const char** ptr = luaFiles;
+    Cstr allLibs = "";
+    while (*ptr != 0) {
+        Cstr libfile = CONCAT(LUA_PATH, *ptr, ".o");
+        allLibs = CONCAT(allLibs, " ", libfile);
+        ptr++;
+    }
+
+    CMD(CC, "-g", OUTPUT, LIB_DIRS, "obj/main.o", "obj/olcPixelGameEngine.o", "obj/objects.o", "obj/animation.o", "obj/map.o", allLibs, LIBS);
     return 0;
 }

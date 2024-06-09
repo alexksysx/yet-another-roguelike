@@ -29,6 +29,13 @@ const Tile& GameMap::operator [](int i) const {
     return tiles[i];
 }
 
+int GameMap::getWidth() const {
+    return width;
+}
+int GameMap::getHeight() const {
+    return height;
+}
+
 void GameMap::generateMap(size_t rooms_count) {
     std::list<Rect> areas;
     std::list<Rect> tmp;
@@ -79,7 +86,7 @@ void GameMap::generateMap(size_t rooms_count) {
 
     i = 0;
     for (Rect& a: rooms) {
-        std::cout << "Room " << i << ", x = " << a.x << ", y = " << a.y << ", w = " << a.w << ", y2 = " << a.h << "\n" ;
+        std::cout << "Room " << i << ", x = " << a.x << ", y = " << a.y << ", w = " << a.w << ", h = " << a.h << "\n" ;
         i++;
     }
 
