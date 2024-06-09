@@ -3,3 +3,5 @@ obj
 .vscode
 nob.exe
 nob.exe.old
+**/*.o
+**/*.a
