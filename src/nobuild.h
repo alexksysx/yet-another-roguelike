@@ -109,6 +109,7 @@ typedef struct {
 
 Cstr_Array cstr_array_make(Cstr first, ...);
 Cstr_Array cstr_array_append(Cstr_Array cstrs, Cstr cstr);
+Cstr_Array cstr_array_append_multiple(Cstr_Array cstrs, ...);
 Cstr cstr_array_join(Cstr sep, Cstr_Array cstrs);
 
 #define JOIN(sep, ...) cstr_array_join(sep, cstr_array_make(__VA_ARGS__, NULL))
@@ -148,6 +149,12 @@ typedef struct {
         Cmd cmd = {                                     \
             .line = cstr_array_make(__VA_ARGS__, NULL)  \
         };                                              \
+        INFO("CMD: %s", cmd_show(cmd));                 \
+        cmd_run_sync(cmd);                              \
+    } while (0)
+
+#define CMD_RUN(cmd)                                        \
+    do {                                                \
         INFO("CMD: %s", cmd_show(cmd));                 \
         cmd_run_sync(cmd);                              \
     } while (0)
@@ -446,6 +453,35 @@ Cstr_Array cstr_array_append(Cstr_Array cstrs, Cstr cstr)
     memcpy(result.elems, cstrs.elems, cstrs.count * sizeof(result.elems[0]));
     result.elems[cstrs.count] = cstr;
     return result;
+}
+
+Cstr_Array cstr_array_append_multiple(Cstr_Array cstrs, ...)
+{
+    va_list args;
+    size_t orig_size = cstrs.count;
+    size_t args_size = 0;
+    va_start(args, cstrs);
+    for (Cstr next = va_arg(args, Cstr);
+            next != NULL;
+            next = va_arg(args, Cstr)) {
+        args_size += 1;
+    }
+    va_end(args);
+
+    Cstr_Array result = {
+        .count = cstrs.count + args_size
+    };
+
+    result.elems = malloc(sizeof(result.elems[0]) * result.count);
+    memcpy(result.elems, cstrs.elems, cstrs.count * sizeof(result.elems[0]));
+
+    va_start(args, cstrs);
+    for (Cstr next = va_arg(args, Cstr);
+            next != NULL;
+            next = va_arg(args, Cstr)) {
+        result.elems[orig_size++] = next;
+    }
+    va_end(args);
 }
 
 int cstr_ends_with(Cstr cstr, Cstr postfix)

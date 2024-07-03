@@ -83,7 +83,7 @@ GO_REBUILD_URSELF(argc, argv);
     makeLua();
     CMD(CC, "-c", FLAGS, "-o", "obj/objects.o", "src/objects.cpp");
     CMD(CC, "-c", FLAGS, "-o", "obj/animation.o", "src/animation.cpp");
-    CMD(CC, "-c", FLAGS, "-o", "obj/map.o", "src/map.cpp");
+    CMD(CC, "-c", INCLUDE_DIRS, FLAGS, "-o", "obj/map.o", "src/map.cpp");
     CMD(CC, "-c", INCLUDE_DIRS, FLAGS, "-o", "obj/main.o", SOURCE);
 
 
