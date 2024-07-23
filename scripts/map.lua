@@ -6,6 +6,18 @@ Map.width = 40
 Map.height = 50
 Map.rooms = 11
 
+
+-- enum class TileType{ EMPTY = 0, NOT_EXIST, FLOOR, WALL, ENTER, EXIT };
+
+-- TileType = {
+--     EMPTY = 0,
+--     NOT_EXIST = 1,
+--     FLOOR = 2,
+--     WALL = 3,
+--     ENTER = 4,
+--     EXIT = 5
+-- }
+
 function splitArea(rect)
     local areas = {}
     if (rect.w >= rect.h) then
@@ -51,7 +63,7 @@ function splitArea(rect)
     return areas
 end
 
-function generateMap(room_count)
+function generateMap(room_count, gameMap)
     local firstArea = Rect.new(0, 0, Map.width, Map.height)
 
     local areas = splitArea(firstArea)
@@ -102,5 +114,25 @@ function generateMap(room_count)
         table.insert(rooms, Rect.new(roomX, roomY, roomWidth, roomHeight))
     end
 
+    for _, r in pairs(rooms) do
+        for y = r.y, r.y + r.h-1, 1 do
+            for x = r.x, r.x + r.w-1, 1 do
+                gameMap:setTile(TileType.FLOOR, x, y);
+            end
+        end
+    end
+
+    print("Rooms size: " .. #rooms)
+
+    for r = 2, #rooms, 1 do
+        local r1 = rooms[r - 1]
+        local r2 = rooms[r]
+        gameMap:connectPoints(
+            r1.x + math.random(0, r1.w - 1), r1.y + math.random(0, r1.h - 1),
+            r2.x + math.random(0, r2.w - 1), r2.y + math.random(0, r2.h - 1)
+        )
+
+    end
+    
     return rooms
 end

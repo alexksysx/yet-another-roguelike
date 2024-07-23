@@ -53,6 +53,10 @@ struct Rect {
         return w * h;
     }
 
+    void print() {
+        std::cout << "x: " << x << ", y: " << y << ", w: " << w << ", h:" << h;
+    }
+
     inline bool operator==(const Rect& r) {
         return x == r.x && y == r.y && w == r.w && h == r.h;
     }
@@ -80,7 +84,6 @@ private:
     Tile notExistTile = Tile(TileType::NOT_EXIST);
 
     std::list<Rect> splitArea(Rect rect);
-    void connectPoints(olc::vi2d p1, olc::vi2d p2);
     void placeTilesLine(olc::vi2d p1, olc::vi2d p2);
 public:
     GameMap(int width, int height);
@@ -94,4 +97,7 @@ public:
     int getWidth() const;
     int getHeight() const;
     std::vector<Tile*> getSurroundingTiles(uint8_t x, uint8_t y);
+    void setTile(uint8_t type, int x, int y);
+    void connectPointsVi2d(olc::vi2d p1, olc::vi2d p2);
+    void connectPoints(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
 };

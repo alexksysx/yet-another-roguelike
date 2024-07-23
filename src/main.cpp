@@ -67,22 +67,8 @@ public:
         if (animationMove->isFinished()) {
             CheckUserInput();
         }             
-
-        animationMove->update(fElapsedTime);
-        animationColor->update(fElapsedTime);
-
-        Clear(olc::WHITE);
-
-        for (int y = 0; y < map->getHeight(); y++) {
-            for (int x = 0; x < map->getWidth(); x++) {
-                if (map->getTile(x, y).getType() == TileType::WALL) {
-                    DrawDecal({x*tileOffset, y*tileOffset}, wallTile->getDecal(), wallTile->getScale());
-                }
-            }
-        }
-
-        DrawDecal(player->getPosition(), player->getDecal(), player->getScale(), player->getPixel());
-        
+        UpdateAnimations(fElapsedTime);
+        Draw();
 
         return true;
     }
@@ -105,6 +91,27 @@ public:
             animationMove->start();
             animationColor->start();
         }
+    }
+
+    void UpdateAnimations(float fElapsedTime) {
+
+        animationMove->update(fElapsedTime);
+        animationColor->update(fElapsedTime);
+
+    }
+
+    void Draw() {
+        Clear(olc::WHITE);
+
+        for (int y = 0; y < map->getHeight(); y++) {
+            for (int x = 0; x < map->getWidth(); x++) {
+                if (map->getTile(x, y).getType() == TileType::WALL) {
+                    DrawDecal({x*tileOffset, y*tileOffset}, wallTile->getDecal(), wallTile->getScale());
+                }
+            }
+        }
+
+        DrawDecal(player->getPosition(), player->getDecal(), player->getScale(), player->getPixel());
     }
 };
 
